@@ -1,0 +1,34 @@
+# Created: 2023-05-02T16:20:43.542284
+# PINT_version: 0.9.3
+# User: smcsweeney
+# Host: smcsweeney-icrar
+# OS: Linux-6.2.1-arch1-1-x86_64-with-glibc2.37
+# Format: pint
+PSRJ                           GPM1839-10
+EPHEM                               DE436
+CLOCK                        TT(BIPM2021)
+UNITS                                 TDB
+START              47427.9251678243759837
+FINISH             59797.5709143521741897
+TIMEEPH                              FB90
+T2CMETHOD                        IAU2000B
+DILATEFREQ                              N
+DMDATA                                  N
+NTOA                                   59
+CHI2                                  0.0
+RAJ                     18:39:02.00000000 0 0.00000000000000000000
+DECJ                   -10:31:49.50000000 0 0.00000000000000000000
+PMRA                                  0.0
+PMDEC                                 0.0
+PX                                    0.0
+POSEPOCH           59761.0000000000000000
+F0              0.00075861273277615105104 1 6.0035976384835321217e-11
+F1               5.737912281478703098e-20 1 1.7491963292587462216e-19
+PEPOCH             59761.0000000000000000
+CORRECT_TROPOSPHERE                         N
+PLANET_SHAPIRO                          N
+DM                                  275.0 0 10.0
+DMEPOCH            59761.0000000000000000
+TZRMJD             59761.0000000000000000
+TZRSITE                               MWA
+TZRFRQ                              150.0
