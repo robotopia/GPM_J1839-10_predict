@@ -23,7 +23,7 @@ def check_model_input_units(TEPOCH, F0, F1):
 
     # Get everything into astropy Time and Quantity objects
     if not isinstance(TEPOCH, Time):
-        TEPOCH = Time(TEPOCH, format='mjd')
+        TEPOCH = Time(TEPOCH, format='mjd', scale='utc')
 
     if not isinstance(F0, u.Quantity):
         F0 *= u.Hz
@@ -131,7 +131,7 @@ def parse_timfile(timfile):
         errs.append(float(tokens[3]))
 
     freqs *= u.MHz
-    mjds = Time(mjds, format='mjd')
+    mjds = Time(mjds, format='mjd', scale='utc')
     errs *= u.us
 
     return freqs, mjds, errs
@@ -239,7 +239,7 @@ def main():
         raise Exception("Could not find F1 in the provided par file")
 
     try:
-        TEPOCH = Time(pardict['PEPOCH'][0], format='mjd')
+        TEPOCH = Time(pardict['PEPOCH'][0], format='mjd', scale='utc')
         if len(pardict['PEPOCH']) > 1:
             TEPOCH_err = float(pardict['PEPOCH'][-1]) * u.day
     except:
@@ -264,7 +264,7 @@ def main():
 
     popt, pcov = curve_fit(predict_TOA, initial_Ns, mjds.mjd, p0=p0, sigma=sigma, jac=predict_TOA_jacobian)
 
-    TEPOCH = Time(popt[0], format='mjd')
+    TEPOCH = Time(popt[0], format='mjd', scale='utc')
     F0 = popt[1] * u.Hz
     F1 = popt[2] * u.Hz**2
 
@@ -275,18 +275,18 @@ def main():
     F1_err *= u.Hz**2
 
     # As in the refitting, assume that the F0 and F1 are sufficiently good to get the pulse numbers
-    T = Time(args.time_range, format=args.time_format)
+    T = Time(args.time_range, format=args.time_format, scale='utc')
     N_start, N_end = np.floor(predict_N(T, TEPOCH, F0, F1).decompose().value)
     Ns = np.arange(N_start, N_end+1)
 
-    TOAs = Time(predict_TOA(Ns, TEPOCH, F0, F1), format='mjd')
-    non_F1_TOAs = Time(predict_TOA(Ns, TEPOCH, F0, 0), format='mjd')
+    TOAs = Time(predict_TOA(Ns, TEPOCH, F0, F1), format='mjd', scale='utc')
+    non_F1_TOAs = Time(predict_TOA(Ns, TEPOCH, F0, 0), format='mjd', scale='utc')
     diffs = (TOAs - non_F1_TOAs).to(u.s)
 
     # Make plots, if requested
     if args.outplot is not None:
         initial_Ns = np.round(predict_N(mjds, TEPOCH, F0, F1).decompose().value)
-        initial_non_F1_TOAs = Time(predict_TOA(initial_Ns, TEPOCH, F0, 0), format='mjd')
+        initial_non_F1_TOAs = Time(predict_TOA(initial_Ns, TEPOCH, F0, 0), format='mjd', scale='utc')
         initial_diffs = (mjds - initial_non_F1_TOAs).to(u.s)
 
         smallest_N = np.min([np.min(initial_Ns), np.min(Ns)])
@@ -297,8 +297,8 @@ def main():
         Σ = np.array(pcov)
         err = np.sqrt([Js[i,:] @ Σ @ Js[i,:].T for i in range(Js.shape[0])]) * u.day
 
-        model_TOAs = Time(predict_TOA(model_Ns, TEPOCH, F0, F1), format='mjd')
-        model_non_F1_TOAs = Time(predict_TOA(model_Ns, TEPOCH, F0, 0), format='mjd')
+        model_TOAs = Time(predict_TOA(model_Ns, TEPOCH, F0, F1), format='mjd', scale='utc')
+        model_non_F1_TOAs = Time(predict_TOA(model_Ns, TEPOCH, F0, 0), format='mjd', scale='utc')
         model_diffs = (model_TOAs - model_non_F1_TOAs).to(u.s)
 
         plt.fill_between(model_Ns, (model_diffs + err).to(u.s).value, (model_diffs - err).to(u.s).value, fc="gray")
